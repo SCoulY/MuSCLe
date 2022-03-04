@@ -10,7 +10,7 @@ import scipy.misc
 from torchvision import transforms
 import torchvision.transforms.functional as F
 from torch.utils.data import Subset
-import imutils
+import src.imutils
 import imageio
 
 IMG_FOLDER_NAME = "JPEGImages"

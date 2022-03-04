@@ -1,18 +1,20 @@
 from PIL import Image
 import torch
 import torchvision
-import imutils
+
+import src.imutils as imutils
+import src.indexing as indexing
+from src.data import *
 
 import argparse
 import importlib
 import numpy as np
 
-from data import *
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import os
-import indexing
+
 
 
 if __name__ == '__main__':
@@ -27,14 +29,14 @@ if __name__ == '__main__':
     parser.add_argument("--sem_seg_bg_thres", default=0.35, type=float)
 
     # Inter-pixel Relation Network (IRNet)
-    parser.add_argument("--irn_network", default="network.resnet50_irn", type=str)
-    parser.add_argument("--irn_weights_name", default="/media/data/coky/MuSCLe/irn_fg0.4_bg0.1_crf_label_7.pth", type=str)
+    parser.add_argument("--irn_network", default="src.backbones.resnet50_irn", type=str)
+    parser.add_argument("--irn_weights_name", default="/media/data/coky/MuSCLe_github/MuSCLe/irn_fg0.4_bg0.1_crf_label_7.pth", type=str)
     parser.add_argument("--cam_dir", required=True, type=str)
-    parser.add_argument("--sem_seg_out_dir", default="/media/data/coky/MuSCLe/irn_rw", type=str)
+    parser.add_argument("--sem_seg_out_dir", default="./irn_rw", type=str)
 
     parser.add_argument("--voc12_root", default='/home/lunet/coky/CAM/VOC2012', type=str)
     parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/train.txt", type=str)
-    parser.add_argument("--soft_output", default=0, type=int)
+    parser.add_argument("--output", default=0, type=int)
     args = parser.parse_args()
 
     model = getattr(importlib.import_module(args.irn_network), 'EdgeDisplacement')()
@@ -54,7 +56,7 @@ if __name__ == '__main__':
 
     cmap = imutils.color_map()[:, np.newaxis, :]
     
-    if args.soft_output:
+    if args.output:
         os.makedirs(args.sem_seg_out_dir, exist_ok=True)    
     os.makedirs(args.sem_seg_out_dir+'_png', exist_ok=True)
     
@@ -82,7 +84,7 @@ if __name__ == '__main__':
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0), value=args.sem_seg_bg_thres)
             
 
-            if args.soft_output:
+            if args.output:
                 rw_pred = torch.squeeze(rw_up_bg).permute(1,2,0).cpu().numpy()
                 res = rw_pred.astype(np.half)
                 np.save(os.path.join(args.sem_seg_out_dir, img_name + '.npy'), res)

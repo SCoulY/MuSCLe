@@ -2,10 +2,10 @@ import numpy as np
 import torch
 import cv2
 import os
-from data import *
+from src.data import *
+import src.imutils as imutils
 from torch.utils.data import DataLoader
 import torchvision
-import imutils
 import argparse
 from src.MuSCLe import *
 from PIL import Image
@@ -63,7 +63,7 @@ def accuracy(output, target, topk=(1,5), num_classes=20):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", default='/home/lunet/coky/CAM/EffSeg_pix_1000.pth', type=str)
+    parser.add_argument("--weights", default='/media/data/coky/MuSCLe_github/MuSCLe/MCL_55.35_58.5.pth', type=str)
     parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/train.txt", type=str)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--num_classes", default=21, type=int)

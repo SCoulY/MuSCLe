@@ -127,5 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-MCL_55.35_58.5.pth
-MuSCL-b7_63.35_66.6.pth
+
+#checkpoints
+*.pth
+*.ckpt

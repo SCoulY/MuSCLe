@@ -2,10 +2,10 @@ import numpy as np
 import torch
 import cv2
 import os
-from data import *
+from src.data import *
 from torch.utils.data import DataLoader
 import torchvision
-import imutils
+import src.imutils as imutils
 import argparse
 from src.MuSCLe import *
 from PIL import Image
@@ -49,16 +49,16 @@ def softmax_np(x, axis=0):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", default='/home/lunet/coky/CAM/seg_retrain_7.pth', type=str)
-    parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/train.txt", type=str)
+    parser.add_argument("--weights", default='/media/data/coky/MuSCLe_github/MuSCLe/MuSCL-b7_63.35_66.6.pth', type=str)
+    parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/val.txt", type=str)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--num_classes", default=21, type=int)
-    parser.add_argument("--tblog", default="/home/lunet/coky/CAM/tblog_EffSeg_ae/infer", type=str)
+    parser.add_argument("--tblog", default="/home/lunet/coky/CAM/tblog_ae/infer", type=str)
     parser.add_argument("--voc12_root", default='/home/lunet/coky/CAM/VOC2012', type=str)
     parser.add_argument("--cls_dir", default=None, type=str)
     parser.add_argument("--out_seg", default=None, type=str)
     parser.add_argument("--out_seg_pred", default=None, type=str)
-    parser.add_argument("--crf", default=0, type=int)
+    parser.add_argument("--crf", default=1, type=int)
     parser.add_argument("--bifpn", default=3, type=int)
     parser.add_argument("--pretrained", default='b7', type=str)
 

@@ -2,7 +2,7 @@ import torch
 import copy
 from torch import nn
 import torch.nn.functional as F
-from EfficientNet_PyTorch.efficientnet_pytorch.model import EfficientNet
+from src.EfficientNet_PyTorch.efficientnet_pytorch.model import EfficientNet
 
 
 class SwishImplementation(torch.autograd.Function):
