@@ -4,11 +4,11 @@ inference and evaluation codes, training procedure will be made public after acc
 
  
 ##Preparation
-```
-- Data: Download PASCAL VOC 2012 devkit (follow instructions in http://host.robots.ox.ac.uk/pascal/VOC/voc2012/#devkit).
 
-- Model: Download model weights from [google drive](https://drive.google.com/drive/folders/1K3mMECLdWdu8YVrMq8YblppRdLtCcAaW?usp=sharing), including pretrained MCL, MuSCLe and IRN models.
-```
+Data: Download PASCAL VOC 2012 devkit (follow instructions in http://host.robots.ox.ac.uk/pascal/VOC/voc2012/#devkit).
+
+Model: Download model weights from [google drive](https://drive.google.com/drive/folders/1K3mMECLdWdu8YVrMq8YblppRdLtCcAaW?usp=sharing), including pretrained MCL, MuSCLe and IRN models.
+
 
 ##CAM generation
 ```
