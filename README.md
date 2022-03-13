@@ -21,7 +21,7 @@ python infer_irn.py --cam_dir CAM_DIR --sem_seg_out_dir OUTPUT_PSEUDO_LABEL_DIR 
 ```
 
 ## CAM quality evaluation
-###Raw CAM evaluation
+### Raw CAM evaluation
 ```
 cd src
 python evaluation.py --comment COMMENTS --type npy --list PATH_TO_INFER_LIST --predict_dir CAM_DIR --curve True
