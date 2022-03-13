@@ -1,6 +1,6 @@
 # MuSCLe
  The implementation of: A Multi-Strategy Contrastive Learning Framework for Weakly Supervised Semantic Segmentation  (MuSCLe). Current repository only contains
-inference and evaluation codes, training procedure will be made public after acceptance.
+inference and evaluation codes, and training procedure will be made public after acceptance.
 
  
 ## Preparation
