@@ -131,3 +131,9 @@ dmypy.json
 #checkpoints
 *.pth
 *.ckpt
+
+#npy
+*.npy
+
+#png
+*.png
