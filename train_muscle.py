@@ -18,10 +18,10 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 from torch.optim import lr_scheduler
-from loss_multilabel import *
-from EffSeg import *
-from edge import FieldLoss
-import imutils, pyutils, torchutils
+from src.loss_multilabel import *
+from src.EffSeg import *
+from src.edge import FieldLoss
+from src import imutils, pyutils, torchutils
 
 
 def cam_maxnorm(cams):
@@ -86,17 +86,17 @@ if __name__ == '__main__':
     parser.add_argument("--lr", default=1e-5, type=float)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--wt_dec", default=1e-5, type=float)
-    parser.add_argument("--train_list", default="../data/VOC2012/train_aug.txt", type=str)
+    parser.add_argument("--train_list", default="data/VOC2012/train_aug.txt", type=str)
     parser.add_argument("--num_classes", default=21, type=int)
-    parser.add_argument("--session_name", default="../runs/EffSeg_ae", type=str)
+    parser.add_argument("--session_name", default="runs/EffSeg_ae", type=str)
     parser.add_argument("--crop_size", default=448, type=int)
     parser.add_argument("--weights", default=None, type=str)
-    parser.add_argument("--voc12_root", default='../data/VOC2012', type=str)
+    parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
     parser.add_argument("--mask_root", help='PATH_TO_PSEUDO_LABEL', type=str)
     parser.add_argument("--k", default=128, type=int)
     parser.add_argument("--step", default=7, type=int)
     parser.add_argument("--lamb", default=5e-2, type=float)
-    parser.add_argument("--tblog_dir", default='../logs/tblog_EffSeg_ae', type=str)
+    parser.add_argument("--tblog_dir", default='logs/tblog_EffSeg_ae', type=str)
     parser.add_argument("--cls_dir", default=None, type=str)
     parser.add_argument("--crf", default=0, type=int)
     parser.add_argument("--seed", default=221, type=int)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
                                    num_workers=args.num_workers, pin_memory=True, 
                                    drop_last=True, shuffle=True, prefetch_factor=4)
     
-    eval_dataset = VOC12ClsDatasetMSF("../data/val.txt", voc12_root=args.voc12_root,
+    eval_dataset = VOC12ClsDatasetMSF("data/val.txt", voc12_root=args.voc12_root,
                                                   scales=[1],
                                                   inter_transform=transforms.Compose(
                                                        [np.asarray,
@@ -238,7 +238,7 @@ if __name__ == '__main__':
             # img = img_list[0]
             img_path = get_img_path(img_name, args.voc12_root)
             orig_img = np.asarray(Image.open(img_path))
-            gt_file = os.path.join('../data/VOC2012/SegmentationClass','%s.png'%img_name)
+            gt_file = os.path.join('data/VOC2012/SegmentationClass','%s.png'%img_name)
             gt = np.array(Image.open(gt_file))
             H, W = gt.shape
             label_with_bg = label.clone()

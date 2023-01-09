@@ -14,9 +14,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.nn as nn
 from torch.optim import lr_scheduler
-from loss_multilabel import *
-from EffSeg import *
-import imutils, pyutils, torchutils
+from src.loss_multilabel import *
+from src.EffSeg import *
+from src import imutils, pyutils, torchutils
 
 import pandas as pd
 
@@ -78,13 +78,13 @@ if __name__ == '__main__':
     parser.add_argument("--lr", default=1e-3, type=float)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--wt_dec", default=1e-6, type=float)
-    parser.add_argument("--train_list", default="../data/train_aug.txt", type=str)
+    parser.add_argument("--train_list", default="data/train_aug.txt", type=str)
     parser.add_argument("--num_classes", default=21, type=int)
-    parser.add_argument("--session_name", default="../runs/EffSeg_mcl", type=str)
+    parser.add_argument("--session_name", default="runs/EffSeg_mcl", type=str)
     parser.add_argument("--crop_size", default=448, type=int)
     parser.add_argument("--weights", default=None, type=str)
-    parser.add_argument("--voc12_root", default='../data/VOC2012', type=str)
-    parser.add_argument("--tblog_dir", default='../logs/tblog_mcl', type=str)
+    parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
+    parser.add_argument("--tblog_dir", default='logs/tblog_mcl', type=str)
     parser.add_argument("--seed", default=0, type=int)
     args = parser.parse_args()
 
@@ -117,7 +117,7 @@ if __name__ == '__main__':
                         transforms.RandomErasing(p=0.5, scale=(0.02,0.2))
                     ]), view_size=(224,224))
     
-    eval_dataset = VOC12ClsDatasetMSF("../data/train.txt", voc12_root=args.voc12_root,
+    eval_dataset = VOC12ClsDatasetMSF("data/train.txt", voc12_root=args.voc12_root,
                                                   scales=[1],
                                                   inter_transform=transforms.Compose(
                                                        [np.asarray,
@@ -306,13 +306,13 @@ if __name__ == '__main__':
                     sgc_dict[i] = pred[i+1]
                 np.save(os.path.join('./training_eval', img_name + '.npy'), sgc_dict)
         
-        df = pd.read_csv('../data/train.txt', names=['filename'])
+        df = pd.read_csv('data/train.txt', names=['filename'])
         name_list = df['filename'].values
-        from evaluation import do_python_eval
+        from src.evaluation import do_python_eval
         mious = []
         for t in range(20,52, 2):
             t /= 100.0
-            loglist = do_python_eval('../training_eval', 'VOC2012/SegmentationClass', name_list, 21, 'npy', t, printlog=False)
+            loglist = do_python_eval('training_eval', 'data/VOC2012/SegmentationClass', name_list, 21, 'npy', t, printlog=False)
             mious.append(loglist['mIoU'])
         max_miou = max(mious)
         max_t = mious.index(max_miou)*0.02 + 0.2

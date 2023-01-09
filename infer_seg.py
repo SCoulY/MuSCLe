@@ -49,12 +49,12 @@ def softmax_np(x, axis=0):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", default='/media/data/coky/MuSCLe_github/MuSCLe/MuSCL-b7_63.35_66.6.pth', type=str)
-    parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/val.txt", type=str)
+    parser.add_argument("--weights", help='PATH_TO_MuSCLe_WEIGHTS', type=str)
+    parser.add_argument("--infer_list", default="data/val.txt", type=str)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--num_classes", default=21, type=int)
-    parser.add_argument("--tblog", default="/home/lunet/coky/CAM/tblog_ae/infer", type=str)
-    parser.add_argument("--voc12_root", default='/home/lunet/coky/CAM/VOC2012', type=str)
+    parser.add_argument("--tblog", default="logs/infer", type=str)
+    parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
     parser.add_argument("--cls_dir", default=None, type=str)
     parser.add_argument("--out_seg", default=None, type=str)
     parser.add_argument("--out_seg_pred", default=None, type=str)
