@@ -34,8 +34,8 @@ if __name__ == '__main__':
     parser.add_argument("--cam_dir", required=True, type=str)
     parser.add_argument("--sem_seg_out_dir", default="./irn_rw", type=str)
 
-    parser.add_argument("--voc12_root", default='../data/VOC2012', type=str)
-    parser.add_argument("--infer_list", default="../data/VOC2012/train.txt", type=str)
+    parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
+    parser.add_argument("--infer_list", default="data/VOC2012/train.txt", type=str)
     parser.add_argument("--output", default=0, type=int)
     args = parser.parse_args()
 

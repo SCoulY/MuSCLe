@@ -88,15 +88,15 @@ if __name__ == '__main__':
     parser.add_argument("--wt_dec", default=1e-5, type=float)
     parser.add_argument("--train_list", default="data/VOC2012/train_aug.txt", type=str)
     parser.add_argument("--num_classes", default=21, type=int)
-    parser.add_argument("--session_name", default="runs/EffSeg_ae", type=str)
+    parser.add_argument("--session_name", default="runs/muscle", type=str)
     parser.add_argument("--crop_size", default=448, type=int)
     parser.add_argument("--weights", default=None, type=str)
     parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
-    parser.add_argument("--mask_root", help='PATH_TO_PSEUDO_LABEL', type=str)
+    parser.add_argument("--mask_root", help='PATH_TO_PSEUDO_LABEL_DIR', type=str)
     parser.add_argument("--k", default=128, type=int)
     parser.add_argument("--step", default=7, type=int)
     parser.add_argument("--lamb", default=5e-2, type=float)
-    parser.add_argument("--tblog_dir", default='logs/tblog_EffSeg_ae', type=str)
+    parser.add_argument("--tblog_dir", default='logs/tblog_muscle', type=str)
     parser.add_argument("--cls_dir", default=None, type=str)
     parser.add_argument("--crf", default=0, type=int)
     parser.add_argument("--seed", default=221, type=int)
@@ -117,6 +117,7 @@ if __name__ == '__main__':
     # model.apply(model.weights_init)
             
     os.makedirs(args.tblog_dir, exist_ok=True)
+    os.makedirs(args.session_name, exist_ok=True)
     tblogger = SummaryWriter(args.tblog_dir)	
 
 
@@ -222,7 +223,7 @@ if __name__ == '__main__':
                     )
 
 
-        torch.save(model.state_dict(), args.session_name + '_{}'.format(str(ep)) + '.pth')
+        torch.save(model.state_dict(), os.path.join(args.session_name, '_{}'.format(str(ep)) + '.pth'))
         # scheduler.step()
 
         ###rapid eval during training

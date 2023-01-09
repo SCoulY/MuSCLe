@@ -95,13 +95,13 @@ if __name__ == '__main__':
         torch.manual_seed(args.seed)
 
     model = EfficientSeg(num_classes=args.num_classes, pretrained='efficientnet-b3', layers=3, MemoryEfficient=True, last_pooling=False)
-    # print(model._modules.items())
 
     for module in model.modules():
         if isinstance(module, torch.nn.modules.BatchNorm2d):
             module.affine = False
             
     os.makedirs(args.tblog_dir, exist_ok=True)
+    os.makedirs(args.session_name, exist_ok=True)
     tblogger = SummaryWriter(args.tblog_dir)	
 
 
@@ -283,7 +283,7 @@ if __name__ == '__main__':
             print('')
  
         # scheduler.step()
-        torch.save(model.state_dict(), args.session_name + '_{}'.format(str(ep)) + '.pth')
+        torch.save(model.state_dict(), os.path.join(args.session_name,'_{}'.format(str(ep)) + '.pth'))
         
         ###rapid eval for lr scheduler
         model.eval()
