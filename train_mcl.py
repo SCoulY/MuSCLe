@@ -15,7 +15,7 @@ import torch.optim as optim
 import torch.nn as nn
 from torch.optim import lr_scheduler
 from src.loss_multilabel import *
-from src.EffSeg import *
+from src.MuSCLe import *
 from src import imutils, pyutils, torchutils
 
 import pandas as pd
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         np.random.seed(args.seed)
         torch.manual_seed(args.seed)
 
-    model = EfficientSeg(num_classes=args.num_classes, pretrained='efficientnet-b3', layers=3, MemoryEfficient=True, last_pooling=False)
+    model = MuSCLe(num_classes=args.num_classes, pretrained='efficientnet-b3', layers=3, MemoryEfficient=True, last_pooling=False)
 
     for module in model.modules():
         if isinstance(module, torch.nn.modules.BatchNorm2d):

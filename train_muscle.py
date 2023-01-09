@@ -19,7 +19,7 @@ import torch.nn as nn
 
 from torch.optim import lr_scheduler
 from src.loss_multilabel import *
-from src.EffSeg import *
+from src.MuSCLe import *
 from src.edge import FieldLoss
 from src import imutils, pyutils, torchutils
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         np.random.seed(args.seed)
         torch.manual_seed(args.seed)
 
-    model = EfficientSeg(num_classes=args.num_classes, pretrained='efficientnet-'+args.pretrained, layers=args.bifpn, MemoryEfficient=True, mode='dec', last_pooling=True)
+    model = MuSCLe(num_classes=args.num_classes, pretrained='efficientnet-'+args.pretrained, layers=args.bifpn, MemoryEfficient=True, mode='dec', last_pooling=True)
 
     # print(model._modules.items())
 
