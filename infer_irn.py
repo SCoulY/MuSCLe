@@ -30,12 +30,12 @@ if __name__ == '__main__':
 
     # Inter-pixel Relation Network (IRNet)
     parser.add_argument("--irn_network", default="src.backbones.resnet50_irn", type=str)
-    parser.add_argument("--irn_weights_name", default="/media/data/coky/MuSCLe_github/MuSCLe/irn_fg0.4_bg0.1_crf_label_7.pth", type=str)
+    parser.add_argument("--irn_weights_name", help="PATH_TO_IRN_WEIGHTS", type=str)
     parser.add_argument("--cam_dir", required=True, type=str)
     parser.add_argument("--sem_seg_out_dir", default="./irn_rw", type=str)
 
-    parser.add_argument("--voc12_root", default='/home/lunet/coky/CAM/VOC2012', type=str)
-    parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/train.txt", type=str)
+    parser.add_argument("--voc12_root", default='../data/VOC2012', type=str)
+    parser.add_argument("--infer_list", default="../data/VOC2012/train.txt", type=str)
     parser.add_argument("--output", default=0, type=int)
     args = parser.parse_args()
 

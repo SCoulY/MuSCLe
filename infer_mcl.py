@@ -63,12 +63,12 @@ def accuracy(output, target, topk=(1,5), num_classes=20):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", default='/media/data/coky/MuSCLe_github/MuSCLe/MCL_55.35_58.5.pth', type=str)
-    parser.add_argument("--infer_list", default="/home/lunet/coky/CAM/voc12/train.txt", type=str)
+    parser.add_argument("--weights", help='PATH_TO_MCL_WEIGHTS', type=str)
+    parser.add_argument("--infer_list", default="../data/VOC2012/train.txt", type=str)
     parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument("--num_classes", default=21, type=int)
     parser.add_argument("--tblog", default=None, type=str)
-    parser.add_argument("--voc12_root", default='/home/lunet/coky/CAM/VOC2012', type=str)
+    parser.add_argument("--voc12_root", default='../data/VOC2012', type=str)
     parser.add_argument("--out_npy", default=None, type=str)
     parser.add_argument("--out_png", default=None, type=str)
 
