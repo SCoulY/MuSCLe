@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
     parser.add_argument("--infer_list", default="data/VOC2012/train.txt", type=str)
-    parser.add_argument("--output", default=0, type=int)
+    parser.add_argument("--soft_output", default=0, type=int, help="output soft pseudo labels for BEACON training")
     args = parser.parse_args()
 
     model = getattr(importlib.import_module(args.irn_network), 'EdgeDisplacement')()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     model = model.cuda()
 
     infer_dataset = VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
-                                        scales=[1.0,],
+                                        scales=[0.5,1,1.5,2],
                                         inter_transform=torchvision.transforms.Compose(
                                             [np.asarray,
                                             imutils.color_norm,
@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     cmap = imutils.color_map()[:, np.newaxis, :]
     
-    if args.output:
+    if args.soft_output:
         os.makedirs(args.sem_seg_out_dir, exist_ok=True)    
     os.makedirs(args.sem_seg_out_dir+'_png', exist_ok=True)
     
@@ -84,7 +84,7 @@ if __name__ == '__main__':
             rw_up_bg = F.pad(rw_up, (0, 0, 0, 0, 1, 0), value=args.sem_seg_bg_thres)
             
 
-            if args.output:
+            if args.soft_output:
                 rw_pred = torch.squeeze(rw_up_bg).permute(1,2,0).cpu().numpy()
                 res = rw_pred.astype(np.half)
                 np.save(os.path.join(args.sem_seg_out_dir, img_name + '.npy'), res)
