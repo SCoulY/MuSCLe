@@ -184,8 +184,6 @@ class MuSCLe(nn.Module):
         else:
             self.layers = layers
             self.BIFPN = BIFPN(swish=self.swish, pretrained=pretrained, layers=self.layers, bifpn_channels=bifpn_channels, last_pooling=last_pooling)
-            # self.fuse = nn.Conv2d(bifpn_channels, 128, 1, bias=True)
-        # self.se = SELayer(bifpn_channels)
         self.fuse_dec = nn.Conv2d(bifpn_channels, num_classes, 1)
         
 
@@ -283,12 +281,7 @@ class MuSCLe(nn.Module):
         elif cam == 'seg':
             FPs = self.backbone(x)
             p1, p2, p3, p4, p5, p6, p7 = FPs[self.p1_seq], FPs[self.p2_seq], FPs[self.p3_seq], FPs[self.p4_seq], FPs[self.p5_seq], FPs[self.p6_seq], FPs[self.p7_seq]
-            # p1 = F.interpolate(p1, size=p3.shape[2:], mode='bilinear', align_corners=True)
-            # p2 = F.interpolate(p2, size=p3.shape[2:], mode='bilinear', align_corners=True)
-            # x = F.interpolate(x, size=p3.shape[2:], mode='bilinear', align_corners=True)
             p3_dec, _, _, _, _ = self.BIFPN(p3, p4, p5, p6, p7)
-            # f = p3_dec #torch.cat([p1, p2, x], dim=1)
-            # p3_dec = self.PCM(p3_dec, f.detach())
             dense_ft = F.interpolate(p3_dec, size=(H,W), mode='bilinear', align_corners=True)
             seg_map = self.fuse_dec(dense_ft)
             return seg_map, dense_ft

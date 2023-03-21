@@ -7,9 +7,8 @@ import time
 import os
 from PIL import Image
 
-from torch.utils.data import DataLoader, WeightedRandomSampler
+from torch.utils.data import DataLoader
 
-from torchvision.transforms.functional import scale
 from data import *
 import argparse
 
@@ -20,8 +19,7 @@ import torch.nn as nn
 from torch.optim import lr_scheduler
 from src.loss_multilabel import *
 from src.MuSCLe import *
-from src.edge import FieldLoss
-from src import imutils, pyutils, torchutils
+from src import imutils, pyutils
 
 
 def cam_maxnorm(cams):

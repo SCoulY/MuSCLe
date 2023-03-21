@@ -45,7 +45,7 @@ if __name__ == '__main__':
     model = model.cuda()
 
     infer_dataset = VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
-                                        scales=[0.5,1,1.5,2],
+                                        scales=[1.0],
                                         inter_transform=torchvision.transforms.Compose(
                                             [np.asarray,
                                             imutils.color_norm,
