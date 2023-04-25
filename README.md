@@ -13,7 +13,7 @@
 - install conda from [conda.io](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
 - build cond env from file
 ```
-conda create --name muscle --file requirements.txt 
+conda env create --name muscle --file environment.yaml
 conda activate muscle
 ```
 
