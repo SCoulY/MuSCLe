@@ -137,3 +137,6 @@ dmypy.json
 
 #png
 *.png
+
+#tfrecords
+events.out*

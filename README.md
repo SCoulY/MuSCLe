@@ -30,7 +30,7 @@ python infer_mcl.py --voc12_root PATH_TO_VOC12 --infer_list PATH_TO_INFER_LIST -
 ## CAM refinement & Pseudo label generation
 ### turn on flag ```--soft_output 1 ``` to store soft pseudo labels for BEACON training
 ```
-python infer_irn.py --cam_dir CAM_DIR --sem_seg_out_dir OUTPUT_PSEUDO_LABEL_DIR -- soft_output 0 --irn_weights_name PATH_TO_PRETRAINED_IRN_MODEL
+python infer_irn.py --cam_dir CAM_DIR --sem_seg_out_dir OUTPUT_PSEUDO_LABEL_DIR --soft_output 0 --irn_weights_name PATH_TO_PRETRAINED_IRN_MODEL
 ```
 
 ## CAM quality evaluation

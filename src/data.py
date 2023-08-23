@@ -2,16 +2,13 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import PIL.Image
-import math
-import random
-import time
 import os.path
 import scipy.misc
 from torchvision import transforms
 import torchvision.transforms.functional as F
 from torch.utils.data import Subset
-import src.imutils
 import imageio
+from .imutils import *
 
 IMG_FOLDER_NAME = "JPEGImages"
 ANNOT_FOLDER_NAME = "Annotations"
@@ -54,10 +51,9 @@ def load_image_label_list_from_xml(img_name_list, voc12_root):
     return [load_image_label_from_xml(img_name, voc12_root) for img_name in img_name_list]
 
 def load_image_label_list_from_npy(img_name_list):
-
-    cls_labels_dict = np.load('/home/lunet/coky/CAM/voc12/cls_labels.npy', allow_pickle=True).item()
-
-    return [cls_labels_dict[img_name] for img_name in img_name_list]
+    cls_labels_dict = np.load('data/cls_labels.npy', allow_pickle=True).item()
+    labels = [cls_labels_dict[x] for x in img_name_list]
+    return labels
 
 def get_img_path(img_name, voc12_root):
     return os.path.join(voc12_root, IMG_FOLDER_NAME, img_name + '.jpg')
@@ -65,9 +61,9 @@ def get_img_path(img_name, voc12_root):
 def load_img_name_list(dataset_path):
 
     img_gt_name_list = open(dataset_path).read().splitlines()
-    img_name_list = [img_gt_name.split(' ')[0][-15:-4] for img_gt_name in img_gt_name_list]
 
-    #img_name_list = img_gt_name_list
+    img_name_list = [img_gt_name.split(' ')[0].split('/')[-1].split('.')[0] for img_gt_name in img_gt_name_list]
+
     return img_name_list
 
 class VOC12SegDataset(Dataset):
@@ -83,11 +79,11 @@ class VOC12SegDataset(Dataset):
         self.inference = inference
         if not self.inference:
             self.colorjitter = transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.05)
-            self.resizelong = imutils.RandomResizeLongWithMask(min_scale, max_scale, mask_type=mask_type)
-            self.crop = imutils.RandomCropWithMask(crop_size)
-            self.flip = imutils.RandomHorizontalFlipWithMask()
-            # self.rot90 = imutils.Rot90WithMask()
-            # self.cutout = imutils.Cutout(mask_size=66, p=0.5)
+            self.resizelong = RandomResizeLongWithMask(min_scale, max_scale, mask_type=mask_type)
+            self.crop =  RandomCropWithMask(crop_size)
+            self.flip =  RandomHorizontalFlipWithMask()
+            # self.rot90 =  Rot90WithMask()
+            # self.cutout =  Cutout(mask_size=66, p=0.5)
 
         
 
@@ -109,7 +105,7 @@ class VOC12SegDataset(Dataset):
             img = self.colorjitter(img)
             img, mask = self.resizelong(img, mask)
         
-            img = imutils.color_norm(np.asarray(img))
+            img =  color_norm(np.asarray(img))
             if self.mask_type == 'hard':
                 mask = np.expand_dims(np.asarray(mask), axis=2) #h,w,1
             img, mask = self.crop(img, mask)
@@ -118,12 +114,12 @@ class VOC12SegDataset(Dataset):
             # img, mask = self.rot90(img, mask)
 
         else:
-            img = imutils.color_norm(np.asarray(img))
+            img =  color_norm(np.asarray(img))
             if self.mask_type == 'hard':
                 mask = np.expand_dims(np.asarray(mask), axis=2) #h,w,1
 
-        img = torch.from_numpy(imutils.HWC_to_CHW(img))
-        mask = torch.from_numpy(imutils.HWC_to_CHW(mask))
+        img = torch.from_numpy( HWC_to_CHW(img))
+        mask = torch.from_numpy( HWC_to_CHW(mask))
         return name, img, label, mask
 
 
@@ -214,7 +210,6 @@ class VOC12ClsDataset(VOC12ImageDataset):
         name, img = super().__getitem__(idx)
 
         label = torch.from_numpy(self.label_list[idx])
-
         return name, img, label
 
 class VOC12ImageViews(Dataset):
@@ -227,8 +222,8 @@ class VOC12ImageViews(Dataset):
         self.view_transform = transforms.Compose([
                         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
                         np.asarray,
-                        imutils.color_norm,
-                        imutils.HWC_to_CHW,
+                         color_norm,
+                         HWC_to_CHW,
                         torch.from_numpy
                     ])
 
@@ -671,21 +666,21 @@ class VOC12SegmentationDataset(Dataset):
         img = np.asarray(img)
 
         if self.rescale:
-            img, label = imutils.random_scale((img, label), scale_range=self.rescale, order=(3, 0))
+            img, label = random_scale((img, label), scale_range=self.rescale, order=(3, 0))
 
         if self.img_normal:
             img = self.img_normal(img)
 
         if self.hor_flip:
-            img, label = imutils.random_lr_flip((img, label))
+            img, label = random_lr_flip((img, label))
 
         if self.crop_method == "random":
-            img, label = imutils.random_crop((img, label), self.crop_size, (0, 255))
+            img, label = random_crop((img, label), self.crop_size, (0, 255))
         else:
-            img = imutils.top_left_crop(img, self.crop_size, 0)
-            label = imutils.top_left_crop(label, self.crop_size, 255)
+            img = top_left_crop(img, self.crop_size, 0)
+            label = top_left_crop(label, self.crop_size, 255)
 
-        img = imutils.HWC_to_CHW(img)
+        img =  HWC_to_CHW(img)
 
         return {'name': name, 'img': img, 'label': label}
 
@@ -703,7 +698,7 @@ class VOC12AffinityDataset(VOC12SegmentationDataset):
     def __getitem__(self, idx):
         out = super().__getitem__(idx)
 
-        reduced_label = imutils.pil_rescale(out['label'], 0.25, 0)
+        reduced_label =  pil_rescale(out['label'], 0.25, 0)
 
         out['aff_bg_pos_label'], out['aff_fg_pos_label'], out['aff_neg_label'] = self.extract_aff_lab_func(reduced_label)
 
@@ -736,24 +731,24 @@ class VOC12ImageDatasetIRN(Dataset):
         img = np.asarray(imageio.imread(get_img_path(name_str, self.voc12_root)))
 
         if self.resize_long:
-            img = imutils.random_resize_long(img, self.resize_long[0], self.resize_long[1])
+            img = random_resize_long(img, self.resize_long[0], self.resize_long[1])
 
         if self.rescale:
-            img = imutils.random_scale(img, scale_range=self.rescale, order=3)
+            img = random_scale(img, scale_range=self.rescale, order=3)
 
         if self.img_normal:
             img = self.img_normal(img)
 
         if self.hor_flip:
-            img = imutils.random_lr_flip(img)
+            img = random_lr_flip(img)
 
         if self.crop_size:
             if self.crop_method == "random":
-                img = imutils.random_crop(img, self.crop_size, 0)
+                img = random_crop(img, self.crop_size, 0)
             else:
-                img = imutils.top_left_crop(img, self.crop_size, 0)
+                img = top_left_crop(img, self.crop_size, 0)
 
         if self.to_torch:
-            img = imutils.HWC_to_CHW(img)
+            img = HWC_to_CHW(img)
 
         return {'name': name_str, 'img': img}

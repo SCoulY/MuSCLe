@@ -6,7 +6,7 @@ from PIL import Image
 import os.path
 import random
 import numpy as np
-import imutils
+from .imutils import *
 
 class PolyOptimizer(torch.optim.SGD):
 
@@ -93,9 +93,9 @@ class SegmentationDataset(Dataset):
             mask = self.mask_transform(mask)
 
         if self.cropsize is not None:
-            img, mask = imutils.random_crop([img, mask], self.cropsize, (0, 255))
+            img, mask = random_crop([img, mask], self.cropsize, (0, 255))
 
-        mask = imutils.RescaleNearest(0.125)(mask)
+        mask = RescaleNearest(0.125)(mask)
 
         if self.flip is True and bool(random.getrandbits(1)):
             img = np.flip(img, 1).copy()

@@ -1,24 +1,17 @@
-
 import torch
 import torch.nn.functional as F
 import numpy as np
 
 class PathIndex:
-
     def __init__(self, radius, default_size):
         self.radius = radius
         self.radius_floor = int(np.ceil(radius) - 1)
-
         self.search_paths, self.search_dst = self.get_search_paths_dst(self.radius)
-
         self.path_indices, self.src_indices, self.dst_indices = self.get_path_indices(default_size)
-
         return
 
     def get_search_paths_dst(self, max_radius=5):
-
         coord_indices_by_length = [[] for _ in range(max_radius * 4)]
-
         search_dirs = []
 
         for x in range(1, max_radius):
@@ -30,7 +23,6 @@ class PathIndex:
                     search_dirs.append((y, x))
 
         for dir in search_dirs:
-
             length_sq = dir[0] ** 2 + dir[1] ** 2
             path_coords = []
 
@@ -56,26 +48,21 @@ class PathIndex:
         return path_list_by_length, path_destinations
 
     def get_path_indices(self, size):
-
         full_indices = np.reshape(np.arange(0, size[0] * size[1], dtype=np.int64), (size[0], size[1]))
 
         cropped_height = size[0] - self.radius_floor
         cropped_width = size[1] - 2 * self.radius_floor
 
         path_indices = []
-
         for paths in self.search_paths:
-
             path_indices_list = []
+
             for p in paths:
-
                 coord_indices_list = []
-
                 for dy, dx in p:
                     coord_indices = full_indices[dy:dy + cropped_height,
                                     self.radius_floor + dx:self.radius_floor + dx + cropped_width]
                     coord_indices = np.reshape(coord_indices, [-1])
-
                     coord_indices_list.append(coord_indices)
 
                 path_indices_list.append(coord_indices_list)
@@ -84,12 +71,10 @@ class PathIndex:
 
         src_indices = np.reshape(full_indices[:cropped_height, self.radius_floor:self.radius_floor + cropped_width], -1)
         dst_indices = np.concatenate([p[:,0] for p in path_indices], axis=0)
-
         return path_indices, src_indices, dst_indices
 
 
 def edge_to_affinity(edge, paths_indices):
-
     aff_list = []
     edge = edge.view(edge.size(0), -1)
 
@@ -110,7 +95,6 @@ def edge_to_affinity(edge, paths_indices):
 
 
 def affinity_sparse2dense(affinity_sparse, ind_from, ind_to, n_vertices):
-
     ind_from = torch.from_numpy(ind_from)
     ind_to = torch.from_numpy(ind_to)
 
@@ -139,7 +123,6 @@ def to_transition_matrix(affinity_dense, beta, times):
     return trans_mat
 
 def propagate_to_edge(x, edge, radius=5, beta=10, exp_times=8):
-
     height, width = x.shape[-2:]
 
     hor_padded = width+radius*2

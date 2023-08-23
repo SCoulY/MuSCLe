@@ -14,10 +14,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.nn as nn
 from torch.optim import lr_scheduler
-from src.loss_multilabel import *
-from src.MuSCLe import *
-from src import imutils, pyutils, torchutils
-
+from src import *
 import pandas as pd
 
 
@@ -105,7 +102,7 @@ if __name__ == '__main__':
     tblogger = SummaryWriter(args.tblog_dir)	
 
 
-    train_dataset = train_dataset = VOC12ClsPix(args.train_list, voc12_root=args.voc12_root,
+    train_dataset = train_dataset = data.VOC12ClsPix(args.train_list, voc12_root=args.voc12_root,
                                                transform=transforms.Compose([
                         imutils.RandomResizeLong(448, 768),
                         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
@@ -117,7 +114,7 @@ if __name__ == '__main__':
                         transforms.RandomErasing(p=0.5, scale=(0.02,0.2))
                     ]), view_size=(224,224))
     
-    eval_dataset = VOC12ClsDatasetMSF("data/train.txt", voc12_root=args.voc12_root,
+    eval_dataset = data.VOC12ClsDatasetMSF("data/train.txt", voc12_root=args.voc12_root,
                                                   scales=[1],
                                                   inter_transform=transforms.Compose(
                                                        [np.asarray,

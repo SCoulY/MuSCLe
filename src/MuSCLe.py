@@ -2,8 +2,8 @@ import torch
 import copy
 from torch import nn
 import torch.nn.functional as F
-from efficientnet_pytorch import EfficientNet
-from edge import *
+from .efficientnet_pytorch import EfficientNet
+from .edge import *
 
 class SwishImplementation(torch.autograd.Function):
     @staticmethod
@@ -224,7 +224,7 @@ class MuSCLe(nn.Module):
 
 
 
-    def forward(self, x, cam='fm'):
+    def forward(self, x, cam='cam'):
         N, C, H, W = x.shape
 
         if cam == 'logits':
@@ -313,8 +313,7 @@ class MuSCLe(nn.Module):
 
 
 if __name__ == "__main__":
-    model = MuSCLe(num_classes=21,pretrained='efficientnet-b5').cuda()
-    inp = torch.rand(4, 3, 32, 32).cuda()
-    label = torch.ones(4, 21).cuda()
-    cam, SGC, emb, logits = model(inp, label)
+    model = MuSCLe(num_classes=21,pretrained='efficientnet-b3',last_pooling=False).cuda()
+    inp = torch.rand(4, 3, 64, 64).cuda()
+    cam, SGC, emb, logits = model(inp, cam='cam')
     print(cam.shape, SGC.shape, emb.shape, logits.shape)

@@ -2,14 +2,12 @@ import numpy as np
 import torch
 import cv2
 import os
-from src.data import *
 from torch.utils.data import DataLoader
 import torchvision
 import src.imutils as imutils
 import argparse
-from src.MuSCLe import *
+from src import *
 from PIL import Image
-import torch.nn.functional as F
 from tensorboardX import SummaryWriter
 
 label_dict = {0:'Background', 1:'Aeroplane', 2:'Bicycle', 3:'Bird', 4:'Boat', 5:'Bottle', 6:'Bus',
@@ -73,7 +71,7 @@ if __name__ == '__main__':
 
     writer = SummaryWriter(args.tblog)
         
-    infer_dataset = VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
+    infer_dataset = data.VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
                                                   scales=[0.5, 0.75, 1, 1.25, 1.5, 1.75],
                                                   inter_transform=torchvision.transforms.Compose(
                                                        [np.asarray,
@@ -91,7 +89,7 @@ if __name__ == '__main__':
     for iter, (img_name, img_list, label) in enumerate(infer_data_loader):
         img_name = img_name[0]; label = label[0].unsqueeze(0)
 
-        img_path = get_img_path(img_name, args.voc12_root)
+        img_path = data.get_img_path(img_name, args.voc12_root)
         orig_img = np.asarray(Image.open(img_path))
         H, W, _ = orig_img.shape
         seg_list = []
@@ -133,58 +131,6 @@ if __name__ == '__main__':
         if args.out_seg is not None:
             os.makedirs(args.out_seg, exist_ok=True)
             cv2.imwrite(os.path.join(args.out_seg, img_name + '.png'), np.argmax(norm_seg, axis=0))
-
-        # for i in range(21):
-        #     # if label_with_bg[:,i] > 1e-5:
-        #     seg_dict[i] = norm_seg[i]
-
-        # img_vis = orig_img.copy()
-        # mean = (0.485, 0.456, 0.406)
-        # std = (0.229, 0.224, 0.225)
-        # img_vis[:,:,0] = (img_vis[:,:,0]*std[0] + mean[0])*255
-        # img_vis[:,:,1] = (img_vis[:,:,1]*std[1] + mean[1])*255
-        # img_vis[:,:,2] = (img_vis[:,:,2]*std[2] + mean[2])*255
-        # img_vis[img_vis > 255] = 255
-        # img_vis[img_vis < 0] = 0
-        # img_vis = img_vis.astype(np.uint8)
-
-        # if args.crf:  
-        #     norm_seg = imutils.crf_inference(img_vis, norm_seg, t=1)
-
-        # img_vis = np.flip(img_vis, axis=1)
-        # image = cv2.resize(img_vis, (W,H), interpolation=cv2.INTER_CUBIC).transpose((2,0,1))
-        # writer.add_image('Image', image, iter)
-
-        # mask_dir = os.path.join(args.voc12_root, 'SegmentationObject', img_name+'.png')
-        # mask = np.array(Image.open(mask_dir))[:, :, np.newaxis]
-        # cmap = imutils.color_map()[:, np.newaxis, :]
-        # new_im = np.dot(mask == 0, cmap[0])
-        # for i in range(1, cmap.shape[0]):
-        #     new_im += np.dot(mask == i, cmap[i])
-        # new_im = Image.fromarray(new_im.astype(np.uint8))
-        # pil_img = Image.fromarray(image.transpose(1,2,0))
-        # blend_image = Image.blend(pil_img, new_im, alpha=0.8)
-        # blend_image = torch.from_numpy(np.array(blend_image).transpose(2,0,1))
-        # writer.add_image('mask', blend_image, iter)
-
-        # seg_map = torch.argmax(torch.from_numpy(norm_seg), dim=0).unsqueeze(2).cpu().data.numpy()
-        # seg_im = np.dot(seg_map == 0, cmap[0])
-        # for i in range(1, cmap.shape[0]):
-        #     seg_im += np.dot(seg_map == i, cmap[i])
-        # seg_im = Image.fromarray(seg_im.astype(np.uint8))
-        # blend_seg = Image.blend(pil_img, seg_im, alpha=0.8)
-        # blend_seg = torch.from_numpy(np.array(blend_seg).transpose(2,0,1))
-        # writer.add_image('seg_map', blend_seg, iter)
-
-        # if args.out_seg_pred is not None:
-        #     os.makedirs(args.out_seg_pred, exist_ok=True)
-        #     for c in range(20):
-        #         if label[:,c] > 1e-5:
-        #             vis_seg = norm_seg[c+1]
-        #             vis_seg = show_cam_on_image(orig_img, vis_seg)
-        #             vis_seg = torch.from_numpy(vis_seg.transpose(2,0,1))
-        #             writer.add_image('seg_on_img', vis_seg, global_step)
-        #             global_step += 1
 
         print(img_name, iter)
     writer.close()

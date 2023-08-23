@@ -2,14 +2,13 @@ import numpy as np
 import torch
 import cv2
 import os
-from src.data import *
-import src.imutils as imutils
+
 from torch.utils.data import DataLoader
 import torchvision
 import argparse
-from src.MuSCLe import *
+from src import *
 from PIL import Image
-import torch.nn.functional as F
+
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 
@@ -88,7 +87,7 @@ if __name__ == '__main__':
         os.makedirs(args.tblog, exist_ok=True)
     writer = SummaryWriter(args.tblog)
     cmap = imutils.color_map()[:, np.newaxis, :]
-    infer_dataset = VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
+    infer_dataset = data.VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
                                                   scales=[0.5,1,1.5,2],
                                                   inter_transform=torchvision.transforms.Compose(
                                                        [np.asarray,
@@ -113,7 +112,7 @@ if __name__ == '__main__':
         # if label[0, 19] == 0:
         #     continue
 
-        img_path = get_img_path(img_name, args.voc12_root)
+        img_path = data.get_img_path(img_name, args.voc12_root)
         orig_img = np.asarray(Image.open(img_path))
         H, W, _ = orig_img.shape
         raw_cam_list, SGC_list, score_list = [], [], []

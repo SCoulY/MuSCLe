@@ -8,8 +8,7 @@ import os
 from PIL import Image
 
 from torch.utils.data import DataLoader
-
-from data import *
+from torchvision import transforms
 import argparse
 
 from tensorboardX import SummaryWriter
@@ -17,9 +16,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 from torch.optim import lr_scheduler
-from src.loss_multilabel import *
-from src.MuSCLe import *
-from src import imutils, pyutils
+from src import *
 
 
 def cam_maxnorm(cams):
@@ -119,7 +116,7 @@ if __name__ == '__main__':
     tblogger = SummaryWriter(args.tblog_dir)	
 
 
-    train_dataset = VOC12SegDataset(args.train_list, 
+    train_dataset = data.VOC12SegDataset(args.train_list, 
                                     args.voc12_root, 
                                     args.mask_root, 
                                     min_scale=0.5, 
@@ -132,7 +129,7 @@ if __name__ == '__main__':
                                    num_workers=args.num_workers, pin_memory=True, 
                                    drop_last=True, shuffle=True, prefetch_factor=4)
     
-    eval_dataset = VOC12ClsDatasetMSF("data/val.txt", voc12_root=args.voc12_root,
+    eval_dataset = data.VOC12ClsDatasetMSF("data/val.txt", voc12_root=args.voc12_root,
                                                   scales=[1],
                                                   inter_transform=transforms.Compose(
                                                        [np.asarray,
@@ -163,7 +160,7 @@ if __name__ == '__main__':
     
     criterion1 = nn.CrossEntropyLoss() 
     
-    criterion2 = FieldLoss(sobel_size=5, beta=1e2, k=args.k)
+    criterion2 = edge.FieldLoss(sobel_size=5, beta=1e2, k=args.k)
     timer = pyutils.Timer("Session started: ")
 
     valid_cam = 0
@@ -234,10 +231,9 @@ if __name__ == '__main__':
         IoU = []
         for iter, (img_name, img_list, label) in enumerate(eval_data_loader):
             img_name = img_name[0]; label = label[0].unsqueeze(0)
-            # img = img_list[0]
-            img_path = get_img_path(img_name, args.voc12_root)
+            img_path = data.get_img_path(img_name, args.voc12_root)
             orig_img = np.asarray(Image.open(img_path))
-            gt_file = os.path.join('data/VOC2012/SegmentationClass','%s.png'%img_name)
+            gt_file = os.path.join(args.voc12_root,'SegmentationClass','%s.png'%img_name)
             gt = np.array(Image.open(gt_file))
             H, W = gt.shape
             label_with_bg = label.clone()

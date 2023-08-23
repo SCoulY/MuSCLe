@@ -2,9 +2,7 @@ from PIL import Image
 import torch
 import torchvision
 
-import src.imutils as imutils
-import src.indexing as indexing
-from src.data import *
+from src import *
 
 import argparse
 import importlib
@@ -35,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument("--sem_seg_out_dir", default="./irn_rw", type=str)
 
     parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
-    parser.add_argument("--infer_list", default="data/VOC2012/train.txt", type=str)
+    parser.add_argument("--infer_list", default="data/train.txt", type=str)
     parser.add_argument("--soft_output", default=0, type=int, help="output soft pseudo labels for BEACON training")
     args = parser.parse_args()
 
@@ -44,7 +42,7 @@ if __name__ == '__main__':
     model.eval()
     model = model.cuda()
 
-    infer_dataset = VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
+    infer_dataset = data.VOC12ClsDatasetMSF(args.infer_list, voc12_root=args.voc12_root,
                                         scales=[1.0],
                                         inter_transform=torchvision.transforms.Compose(
                                             [np.asarray,

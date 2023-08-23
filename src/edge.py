@@ -6,9 +6,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from torchvision import transforms
-from data import *
-from EffSeg import *
-from loss_multilabel import *
+from .data import *
+from .MuSCLe import *
+from .loss_multilabel import *
 
 
 class BGFilter(nn.Module):
