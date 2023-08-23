@@ -1,5 +1,5 @@
 # MuSCLe
- The implementation of: A Multi-Strategy Contrastive Learning Framework for Weakly Supervised Semantic Segmentation  (MuSCLe).
+ The implementation of: [A Multi-Strategy Contrastive Learning Framework for Weakly Supervised Semantic Segmentation](https://www.sciencedirect.com/science/article/pii/S0031320322007774).
  
 ## Preparation
 
