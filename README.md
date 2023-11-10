@@ -23,6 +23,7 @@ python train_mcl.py --voc12_root data --train_list data/train_aug.txt --weights 
 ```
 
 ## CAM generation
+### specify dir ```--tblog XXX/tblog ``` to show raw CAM visualisation in tensorboard
 ```
 python infer_mcl.py --voc12_root PATH_TO_VOC12 --infer_list PATH_TO_INFER_LIST --weights PATH_TO_TRAINED_MODEL --out_npy OUTPUT_DIR
 ```
