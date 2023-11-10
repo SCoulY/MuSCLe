@@ -74,7 +74,7 @@ if __name__ == '__main__':
     parser.add_argument("--max_epoches", default=16, type=int)
     parser.add_argument("--lr", default=1e-4, type=float)
     parser.add_argument("--num_workers", default=8, type=int)
-    parser.add_argument("--wt_dec", default=1e-5, type=float)
+    parser.add_argument("--wt_dec", default=5e-5, type=float)
     parser.add_argument("--train_list", default="data/train_aug.txt", type=str)
     parser.add_argument("--num_classes", default=21, type=int)
     parser.add_argument("--session_name", default="runs/EffSeg_mcl", type=str)

@@ -69,8 +69,6 @@ if __name__ == '__main__':
     parser.add_argument("--tblog", default=None, type=str)
     parser.add_argument("--voc12_root", default='data/VOC2012', type=str)
     parser.add_argument("--out_npy", default=None, type=str)
-    parser.add_argument("--out_png", default=None, type=str)
-
 
 
     args = parser.parse_args()
@@ -194,11 +192,10 @@ if __name__ == '__main__':
                     vis_sgc = norm_SGC[c]
                     vis_sgc = show_cam_on_image(orig_img, vis_sgc)
                     vis_sgc = torch.from_numpy(vis_sgc.transpose(2,0,1))
-
                     writer.add_image('cam_on_img', vis_cam, global_step)
                     writer.add_image('sgc_on_img', vis_sgc, global_step)
 
-                    writer.add_scalars('confidence_score', score_dict, global_step)
+                    # writer.add_scalars('confidence_score', score_dict, global_step)
                     global_step += 1
         
 
